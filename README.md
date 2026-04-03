@@ -5,7 +5,7 @@ Upgrade damage to defend your money from hostile spaceships.
 
 FUTURE UPDATES:
 1. More random events
-2. Researches
+2. Researches (in progress)
 3. Types of spaceships
 4. Types of defense
 5. Your own spaceships
