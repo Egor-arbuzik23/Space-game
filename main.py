@@ -2,11 +2,11 @@ import random
 import time
 import pygame as pg
 pg.init()
-victory=pg.mixer.Sound("Lunar Pool (Lunar Ball) – Victory_ Музыка из игры Dendy.mp3")
-small_defeat=pg.mixer.Sound("Звук выбивания двери.mp3")
-new_day=pg.mixer.Sound("Оповещение о начале Start Tone № 11.wav")
-bg_music=pg.mixer.Sound("doomsday-lament_88023.mp3")
-defeat=pg.mixer.Sound("a652fa61eca8500.mp3")
+victory=pg.mixer.Sound("Victory_sound.mp3")
+small_defeat=pg.mixer.Sound("Small_fail_sound.mp3")
+new_day=pg.mixer.Sound("Small_victory_sound.wav")
+bg_music=pg.mixer.Sound("Background_music.mp3")
+defeat=pg.mixer.Sound("Fail_sound.mp3")
 enemies=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 5, 5, 5, 10, 10]
 creds=5
 credonium=1
