@@ -2,11 +2,11 @@ import random
 import time
 import pygame as pg
 pg.init()
-victory=pg.mixer.Sound("Victory_sound.mp3")
-small_defeat=pg.mixer.Sound("Small_fail_sound.mp3")
-new_day=pg.mixer.Sound("Small_victory_sound.wav")
-bg_music=pg.mixer.Sound("Background_music.mp3")
-defeat=pg.mixer.Sound("Fail_sound.mp3")
+victory=pg.mixer.Sound("SOUNDS and MUSIC/Victory_sound.mp3")
+small_defeat=pg.mixer.Sound("SOUNDS and MUSIC/Small_fail_sound.mp3")
+new_day=pg.mixer.Sound("SOUNDS and MUSIC/Small_victory_sound.wav")
+bg_music=pg.mixer.Sound("SOUNDS and MUSIC/Background_music.mp3")
+defeat=pg.mixer.Sound("SOUNDS and MUSIC/Fail_sound.mp3")
 enemies=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 5, 5, 5, 10, 10]
 creds=5
 credonium=1
@@ -18,6 +18,7 @@ dcost=15
 icost=10
 bg_music.play(100)
 trader_event=60+random.randint(0, 10)
+is_armor_advanced=False
 print("________________________________________________________________________________________________________________________________________________")
 print(" You are last space station in this sector.")
 print("We have sent you some support, but it will arrive only after 100 days.")
@@ -45,6 +46,10 @@ for i in range(100):
     print("Credonium costs", credonium_price, "at the moment.")
     print("Your damage is", damage)
     print("Your income per day is", income)
+    print("__________________________________________________")
+    print("Available researches:")
+    if is_armor_advanced==False:
+        print("Advanced armor (+1 damage, type \"R1\") - 10 creds, 2 credonium")
     print("__________________________________________________")
     print("Damage upgrade cost:", dcost)
     print("Income upgrade cost:", icost)
@@ -91,6 +96,8 @@ for i in range(100):
             print("You died from debt collectors...")
             print("")
             print("__________________________________________________")
+        if days==90:
+            print(" Our fleet is on its way, 10 days until rescue.")
     
 
 
@@ -116,6 +123,16 @@ for i in range(100):
         if credonium>0:
             credonium-=1
             creds+=credonium_price
+    if action=="R1" and creds>=10 and credonium>=2 and is_armor_advanced==False:
+        credonium-=2
+        creds-=10
+        damage+=1
+        is_armor_advanced=True
+        print("Successfully researched advanced armor, damage increased by 1.")
+
+
+
+    #RANDOM EVS        
     if days==trader_event and action=="y" and creds>=50:
         creds-=50
         credonium+=10
