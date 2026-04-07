@@ -1,7 +1,7 @@
 It is a terminal game about space.
 You need to survive 100 days at space station and don't lose all money.
-You can earn money by upgrading income or by selling Credorium.
-Upgrade damage to defend your money from hostile spaceships.
+You can earn money by upgrading income or by selling Credonium.
+Upgrade defense to defend your money from hostile spaceships.
 
 FUTURE UPDATES:
 1. More random events (+1 in last update, he can steal and give)
