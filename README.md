@@ -4,11 +4,11 @@ You can earn money by upgrading income or by selling Credorium.
 Upgrade damage to defend your money from hostile spaceships.
 
 FUTURE UPDATES:
-1. More random events
+1. More random events (+1 in last update, he can steal and give)
 2. Researches (in progress)
-3. Types of spaceships
-4. Types of defense
-5. Your own spaceships
+3. Types of spaceships (kinda done)
+4. Types of defense (in progress)
+5. Your own spaceships (in progress)
 6. Mining on nearby asteroids
 7. Combat system
 8. Factions
