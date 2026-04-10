@@ -1,6 +1,7 @@
 import random
 import time
 import pygame as pg
+difficulty=str(input("Select a difficulty (\"e\" - easy, \"h\" - hard): "))
 pg.init()
 victory=pg.mixer.Sound("SOUNDS and MUSIC/Victory_sound.mp3")
 small_defeat=pg.mixer.Sound("SOUNDS and MUSIC/Small_fail_sound.mp3")
@@ -12,7 +13,10 @@ research=pg.mixer.Sound("SOUNDS and MUSIC/research.mp3")
 the_Gamer=pg.mixer.Sound("SOUNDS and MUSIC/scary.mp3")
 inf_ships=pg.mixer.Sound("SOUNDS and MUSIC/inf_ships sound.mp3")
 enemies=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 5, 5, 5, 10, 10]
-enemies_types=["scout(s)", "scout(s)", "scout(s)", "scout(s)", "scout(s)", "destroyer(s)", "destroyer(s)", "battleship(s)"]
+if difficulty=="e":
+    enemies_types=["scout(s)", "scout(s)", "scout(s)", "scout(s)", "scout(s)", "destroyer(s)", "destroyer(s)", "battleship(s)"]
+if difficulty=="h":
+    enemies_types=["scout(s)", "destroyer(s)", "battleship(s)", "titan(s)"]
 creds=5
 credonium=1
 credonium_price=5
@@ -29,7 +33,8 @@ icost=10
 action=None
 player_ship=""
 player_ship_active=""
-#bg_music.play(100)
+bg_music.play(100)
+player_ships_int=scouts+destroyers+battleships+titans
 
 enemy_arrogantness=0
 enemy_is_partly_destroyed=0
@@ -64,6 +69,7 @@ print("You can buy credonium (type \"b\") and sell it later (type \"s\") for a b
 print("Also you can build some ships - type \"inf_ships\" for more information!")
 print("You can use a torpedo (type \"t\") to destroy all enemies that will arrive in next 3 days.")
 print("Type \"Btorp\" to build 1 torpedo, it costs 50 creds.")
+print("To search enemies' ships (with some creds!) type \"battle\", other instructions will be given.")
 print("Your objective is to survive 100 days.")
 print("Good luck!")
 print("________________________________________________________________________________________________________________________________________________")
@@ -75,7 +81,7 @@ for i in range(100):
     battleship_damage=random.randint(4, 5)
     battleship_defense=random.randint(3, 5)
     titan_damage=random.randint(3, 8)
-    titan_defense=random.randint(4, 6)
+    titan_defense=random.randint(4, 7)
     event=pg.event.get()
     enemy=random.choice(enemies)-random.randint(-1, 1)
     reward_b=enemy
@@ -228,7 +234,7 @@ for i in range(100):
         print("You fight against", enemy, "enemy", enemy_type)
         if not player_ship=="s" or not player_ship=="d" or not player_ship=="b" or not player_ship=="t":
             player_ship=str(input("Choose your ship: "))
-# UPGRADE THIS NOW
+
             if player_ship=="s" and scouts>=1:
                 player_ship_active="scout(s)"
             if player_ship=="d" and destroyers>=1:
@@ -237,7 +243,7 @@ for i in range(100):
                 player_ship_active="battleship(s)"
             if player_ship=="t" and titans>=1:
                 player_ship_active="titan(s)"
-# UPGRADE THIS NOW
+
         if player_ship_active=="scout(s)":
             player_damage_b=scout_damage
             player_defense_b=scout_defense
@@ -253,7 +259,7 @@ for i in range(100):
         battle_action=str(input("Your battle action: "))
         if battle_action=="e":
             battle=False
-        if battle_action=="a":
+        if battle_action=="a" and player_ships_int>=1:
             if player_damage_b>=enemy_defense:
                 enemy-=1
                 if enemy==0:
@@ -263,11 +269,13 @@ for i in range(100):
                 else:
                     print("I hit one!")
             if enemy_damage>=player_defense_b:
-                print("Your ship has been shot down, choose another one.")
+                print("Sadly, your ship has been shot down.")
                 creds-=1
                 if player_ship_active=="scout(s)":
                     if scouts>=1:
                         scouts-=1
+        else:
+            print("Enter a battle action, soldier!")
     
 # ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS
 
@@ -360,6 +368,7 @@ for i in range(100):
 
     if action=="inf_ships":
         inf_ships.play()
+        print()
         print(" Building ships:")
         print("Scout - type \"Bs\", costs 5 creds and 1 credonium.")
         print("Destroyer - type \"Bd\", costs 15 creds and 3 credonium.")
@@ -370,6 +379,7 @@ for i in range(100):
         print("Destroyer - damage 3-4, defense 2-4")
         print("Battleship - damage 4-5, defense 3-5")
         print("Titan - damage 3-8, defense 4-6")
+        print()
 
     if action=="Bs" and creds>=5 and credonium>=1:
         scouts+=1
