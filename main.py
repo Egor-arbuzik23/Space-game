@@ -27,6 +27,8 @@ income=5
 dcost=15
 icost=10
 action=None
+player_ship=""
+player_ship_active=""
 #bg_music.play(100)
 
 enemy_arrogantness=0
@@ -35,6 +37,11 @@ losts=0
 trader_event=60+random.randint(0, 10)
 a_gamer_event=23+random.randint(0, 10)
 player_inv=[scouts, destroyers, battleships, torpedoes, creds, credonium]
+enemy_damage=0
+enemy_defense=0
+player_damage_b=0
+player_defense_b=0
+reward_b=0
 
 is_armor_advanced=False
 is_AA_built=False
@@ -44,6 +51,7 @@ is_income_in_credonium=False
 is_building_advanced=False
 is_building_titans=False
 is_torpedoes_upgraded_once=False
+battle=False
 print("________________________________________________________________________________________________________________________________________________")
 print(" You are last space station in this sector.")
 print("We have sent you some support, but it will arrive only after 100 days.")
@@ -60,11 +68,32 @@ print("Your objective is to survive 100 days.")
 print("Good luck!")
 print("________________________________________________________________________________________________________________________________________________")
 for i in range(100):
+    scout_damage=2
+    scout_defense=random.randint(1, 2)
+    destroyer_damage=random.randint(3, 4)
+    destroyer_defense=random.randint(2, 4)
+    battleship_damage=random.randint(4, 5)
+    battleship_defense=random.randint(3, 5)
+    titan_damage=random.randint(3, 8)
+    titan_defense=random.randint(4, 6)
     event=pg.event.get()
     enemy=random.choice(enemies)-random.randint(-1, 1)
+    reward_b=enemy
     enemy_type=random.choice(enemies_types)
+    if enemy_type=="scout(s)":
+        enemy_damage=scout_damage
+        enemy_defense=scout_defense
+    if enemy_type=="destroyer(s)":
+        enemy_damage=destroyer_damage
+        enemy_defense=destroyer_defense
+    if enemy_type=="battleship(s)":
+        enemy_damage=battleship_damage
+        enemy_defense=battleship_defense
+    if enemy_type=="titan(s)":
+        enemy_damage=titan_damage
+        enemy_defense=titan_defense
     print("                    Day", days)
-    if action!="inf_ships":
+    if action!="inf_ships" or battle==False:
         creds+=income
         credonium_price+=random.randint(-2, 2)
     if credonium_price<=0:
@@ -89,27 +118,28 @@ for i in range(100):
         print("You have", scouts, "scout(-s),", destroyers, "destroyer(-s),", battleships, "battleship(-s) and", titans, "titans.")
     print("You have", torpedoes, "torpedoes.")
     print("__________________________________________________")
-    print("Available researches:")
-    if is_armor_advanced==False:
-        print("Advanced armor (+1 defense, type \"R1\") - 10 creds, 2 credonium")
-    if is_AA_built==False:
-        print("AA (defends against scouts, type \"R2\") - 15 creds, 3 credonium")
-    if is_AA_built==True and is_AA_upgraded==False:
-        print("AA upgrade (defends against scouts and + 2 defense, type \"R3\") - 30 creds, 5 credonium")
-    if is_credonium_buildings==False:
-        print("Explore credonium (unknown result, type \"R4\") - 25 creds, 10 credonium")
-    if is_credonium_buildings==True and is_income_in_credonium==False:
-        print("Credonium production (+1 credonium per 1 day, type \"R5\") - 70 creds, 5 credonium")
-    if is_building_advanced==False:
-        print("Advanced building (reduces ships' cost by 5 creds, type \"R6\") - 30 creds, 3 credonium")
-    if is_building_titans==False and is_building_advanced==True:
-        print("Building titans (allows you to build much larger ships, type \"R7\") - 50 creds, 10 credonium")
-    if is_torpedoes_upgraded_once==False and is_building_advanced==True:
-        print("Advanced torpedoes (+1 day without enemies, type \"R8\") - only 15 creds")
-    print("__________________________________________________")
-    print("Defense upgrade cost:", dcost)
-    print("Income upgrade cost:", icost)
-    print("__________________________________________________")
+    if not battle:
+        print("Available researches:")
+        if is_armor_advanced==False:
+            print("Advanced armor (+1 defense, type \"R1\") - 10 creds, 2 credonium")
+        if is_AA_built==False:
+            print("AA (defends against scouts, type \"R2\") - 15 creds, 3 credonium")
+        if is_AA_built==True and is_AA_upgraded==False:
+            print("AA upgrade (defends against scouts and + 2 defense, type \"R3\") - 30 creds, 5 credonium")
+        if is_credonium_buildings==False:
+            print("Explore credonium (unknown result, type \"R4\") - 25 creds, 10 credonium")
+        if is_credonium_buildings==True and is_income_in_credonium==False:
+            print("Credonium production (+1 credonium per 1 day, type \"R5\") - 70 creds, 5 credonium")
+        if is_building_advanced==False:
+            print("Advanced building (reduces ships' cost by 5 creds, type \"R6\") - 30 creds, 3 credonium")
+        if is_building_titans==False and is_building_advanced==True:
+            print("Building titans (allows you to build much larger ships, type \"R7\") - 50 creds, 10 credonium")
+        if is_torpedoes_upgraded_once==False and is_building_advanced==True:
+            print("Advanced torpedoes (+1 day without enemies, type \"R8\") - only 15 creds")
+        print("__________________________________________________")
+        print("Defense upgrade cost:", dcost)
+        print("Income upgrade cost:", icost)
+        print("__________________________________________________")
     if enemy_is_partly_destroyed!=0:
         enemy=0
     if enemy!=0 and action!="inf_ships":
@@ -169,12 +199,75 @@ for i in range(100):
             print("")
             print("You died from debt collectors...")
             print("__________________________________________________")
+            print("")
+            print("")
+            print("")
+            print("        |EXIT|")
+            print("   O")
+            print("  /|\\_")
+            print("  ||")
+            print(" _/\\")
+            print("    |")
     if days==90:
         print(" Our fleet is on its way, 10 days until rescue.")
     if enemy_is_partly_destroyed>0:
         enemy_is_partly_destroyed-=1
     if is_income_in_credonium==True:
         credonium+=1
+    if action=="battle" and enemy!=0:
+        battle=True
+    if battle==True:
+        print(" You've entered the battle mode.")
+        if is_building_titans==False:
+            print("At first, choose your ship. (scout - \"s\", destroyer - \"d\", battleship - \"b\")")
+        else:
+            print("At first, choose your ship. (scout - \"s\", destroyer - \"d\", battleship - \"b\", titan - \"t\")")
+        print("Then, type \"a\" (attack) to attack enemies.")
+        print("If you type \"e\" (exit) you'll lose 5 creds, but you'll also exit this fight if it's so annoying.")
+    while battle:
+        print("You fight against", enemy, "enemy", enemy_type)
+        if not player_ship=="s" or not player_ship=="d" or not player_ship=="b" or not player_ship=="t":
+            player_ship=str(input("Choose your ship: "))
+# UPGRADE THIS NOW
+            if player_ship=="s" and scouts>=1:
+                player_ship_active="scout(s)"
+            if player_ship=="d" and destroyers>=1:
+                player_ship_active="destroyer(s)"
+            if player_ship=="b" and battleships>=1:
+                player_ship_active="battleship(s)"
+            if player_ship=="t" and titans>=1:
+                player_ship_active="titan(s)"
+# UPGRADE THIS NOW
+        if player_ship_active=="scout(s)":
+            player_damage_b=scout_damage
+            player_defense_b=scout_defense
+        if player_ship_active=="destroyer(s)":
+            player_damage_b=destroyer_damage
+            player_defense_b=destroyer_defense
+        if player_ship_active=="battleship(s)":
+            player_damage_b=battleship_damage
+            player_defense_b=battleship_defense
+        if player_ship_active=="titan(s)":
+            player_damage_b=titan_damage
+            player_defense_b=titan_defense
+        battle_action=str(input("Your battle action: "))
+        if battle_action=="e":
+            battle=False
+        if battle_action=="a":
+            if player_damage_b>=enemy_defense:
+                enemy-=1
+                if enemy==0:
+                    battle=False
+                    print("You won this battle, but not this war. You gained", reward_b, "creds.")
+                    creds+=reward_b
+                else:
+                    print("I hit one!")
+            if enemy_damage>=player_defense_b:
+                print("Your ship has been shot down, choose another one.")
+                creds-=1
+                if player_ship_active=="scout(s)":
+                    if scouts>=1:
+                        scouts-=1
     
 # ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS ACTIONS
 
