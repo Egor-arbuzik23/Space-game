@@ -17,6 +17,7 @@ defense=1
 scouts=5
 destroyers=2
 battleships=1
+titans=0
 torpedoes=3
 income=5
 dcost=15
@@ -35,6 +36,9 @@ is_AA_built=False
 is_AA_upgraded=False
 is_credonium_buildings=False
 is_income_in_credonium=False
+is_building_advanced=False
+is_building_titans=False
+is_torpedoes_upgraded_once=False
 print("________________________________________________________________________________________________________________________________________________")
 print(" You are last space station in this sector.")
 print("We have sent you some support, but it will arrive only after 100 days.")
@@ -45,8 +49,8 @@ print("Type \"i\" if you need to upgrade your income per one day.")
 print("Type \"d\" if you need to upgrade your defense.")
 print("You can buy credonium (type \"b\") and sell it later (type \"s\") for a better price.")
 print("Also you can build some ships - type \"inf_ships\" for more information!")
-print("You can use a torpedoe (type \"t\") to destroy all enemies that will arrive in next 3 days.")
-print("Type \"Bt\" to build 1 torpedoe, it costs 50 creds.")
+print("You can use a torpedo (type \"t\") to destroy all enemies that will arrive in next 3 days.")
+print("Type \"Btorp\" to build 1 torpedo, it costs 50 creds.")
 print("Your objective is to survive 100 days.")
 print("Good luck!")
 print("________________________________________________________________________________________________________________________________________________")
@@ -73,7 +77,10 @@ for i in range(100):
     print("Credonium costs", credonium_price, "at the moment.")
     print("Your defense is", defense)
     print("Your income per day is", income)
-    print("You have", scouts, "scout(-s),", destroyers, "destroyer(-s) and", battleships, "battleship(-s).")
+    if is_building_titans==False:
+        print("You have", scouts, "scout(-s),", destroyers, "destroyer(-s) and", battleships, "battleship(-s).")
+    if is_building_titans==True:
+        print("You have", scouts, "scout(-s),", destroyers, "destroyer(-s),", battleships, "battleship(-s) and", titans, "titans.")
     print("You have", torpedoes, "torpedoes.")
     print("__________________________________________________")
     print("Available researches:")
@@ -87,6 +94,12 @@ for i in range(100):
         print("Explore credonium (unknown result, type \"R4\") - 25 creds, 10 credonium")
     if is_credonium_buildings==True and is_income_in_credonium==False:
         print("Credonium production (+1 credonium per 1 day, type \"R5\") - 70 creds, 5 credonium")
+    if is_building_advanced==False:
+        print("Advanced building (reduces ships' cost by 5 creds, type \"R6\") - 30 creds, 3 credonium")
+    if is_building_titans==False and is_building_advanced==True:
+        print("Building titans (allows you to build much larger ships, type \"R7\") - 50 creds, 10 credonium")
+    if is_torpedoes_upgraded_once==False and is_building_advanced==True:
+        print("Advanced torpedoes (+1 day without enemies, type \"R8\") - only 15 creds")
     print("__________________________________________________")
     print("Defense upgrade cost:", dcost)
     print("Income upgrade cost:", icost)
@@ -180,8 +193,11 @@ for i in range(100):
             creds+=credonium_price
     if action=="t" and torpedoes>0:
         torpedoes-=1
-        enemy_is_partly_destroyed=3
-    if action=="Bt" and creds>=50:
+        if is_torpedoes_upgraded_once==False:
+            enemy_is_partly_destroyed=3
+        else:
+            enemy_is_partly_destroyed=4
+    if action=="Btorp" and creds>=50:
         torpedoes+=1
         creds-=50
 
@@ -214,27 +230,60 @@ for i in range(100):
         credonium-=5
         is_income_in_credonium=True
         print("Congratulations, now we can produce credonium!")
+    if action=="R6" and creds>=30 and credonium>=3:
+        creds-=30
+        credonium-=3
+        is_building_advanced=True
+        print("Successfully upgraded docks, all ships' cost decreased by 5.")
+    if action=="R7" and creds>=50 and credonium>=10 and is_building_advanced==True:
+        creds-=50
+        credonium-=10
+        is_building_titans=True
+        print("Now you can build titans!")
+    if action=="R8" and creds>=15:
+        creds-=15
+        is_torpedoes_upgraded_once=True
 
 # SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS
 
     if action=="inf_ships":
-        print("Building ships:")
+        print(" Building ships:")
         print("Scout - type \"Bs\", costs 5 creds and 1 credonium.")
         print("Destroyer - type \"Bd\", costs 15 creds and 3 credonium.")
         print("Battleship - type \"Bb\", costs 40 creds and 5 credonium.")
+        print("Titan - type \"Bt\", costs 100 creds and 23 credonium.")
+        print(" Ships' parameters:")
+        print("Scout - damage 2, defense 1-2")
+        print("Destroyer - damage 3-4, defense 2-4")
+        print("Battleship - damage 4-5, defense 3-5")
+        print("Titan - damage 3-8, defense 4-6")
 
     if action=="Bs" and creds>=5 and credonium>=1:
         scouts+=1
-        creds-=5
+        if is_building_advanced==False:
+            creds-=5
         credonium-=1
     if action=="Bd" and creds>=15 and credonium>=3:
         destroyers+=1
-        creds-=15
+        if is_building_advanced==False:
+            creds-=15
+        else:
+            creds-=10
         credonium-=3
     if action=="Bb" and creds>=40 and credonium>=5:
         battleships+=1
-        creds-=40
+        if is_building_advanced==False:
+            creds-=40
+        else:
+            creds-=35
         credonium-=5
+    if action=="Bt" and creds>=100 and credonium>=23 and is_building_titans==True:
+        titans+=1
+        if is_building_advanced==False:
+            creds-=100
+        else:
+            creds-=95
+        credonium-=23
 
 # DEBUGGER DEBUGGER DEBUGGER DEBUGGER DEBUGGER DEBUGGER DEBUGGER DEBUGGER DEBUGGER DEBUGGER
     if torpedoes<0:
