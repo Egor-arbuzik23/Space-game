@@ -7,6 +7,10 @@ small_defeat=pg.mixer.Sound("SOUNDS and MUSIC/Small_fail_sound.mp3")
 new_day=pg.mixer.Sound("SOUNDS and MUSIC/Small_victory_sound.wav")
 bg_music=pg.mixer.Sound("SOUNDS and MUSIC/Background_music.mp3")
 defeat=pg.mixer.Sound("SOUNDS and MUSIC/Fail_sound.mp3")
+torpedo=pg.mixer.Sound("SOUNDS and MUSIC/torpedoe.mp3")
+research=pg.mixer.Sound("SOUNDS and MUSIC/research.mp3")
+the_Gamer=pg.mixer.Sound("SOUNDS and MUSIC/scary.mp3")
+inf_ships=pg.mixer.Sound("SOUNDS and MUSIC/inf_ships sound.mp3")
 enemies=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 5, 5, 5, 10, 10]
 enemies_types=["scout(s)", "scout(s)", "scout(s)", "scout(s)", "scout(s)", "destroyer(s)", "destroyer(s)", "battleship(s)"]
 creds=5
@@ -22,7 +26,8 @@ torpedoes=3
 income=5
 dcost=15
 icost=10
-bg_music.play(100)
+action=None
+#bg_music.play(100)
 
 enemy_arrogantness=0
 enemy_is_partly_destroyed=0
@@ -59,8 +64,9 @@ for i in range(100):
     enemy=random.choice(enemies)-random.randint(-1, 1)
     enemy_type=random.choice(enemies_types)
     print("                    Day", days)
-    creds+=income
-    credonium_price+=random.randint(-2, 2)
+    if action!="inf_ships":
+        creds+=income
+        credonium_price+=random.randint(-2, 2)
     if credonium_price<=0:
         credonium_price=10
     if credonium_price>10:
@@ -106,7 +112,7 @@ for i in range(100):
     print("__________________________________________________")
     if enemy_is_partly_destroyed!=0:
         enemy=0
-    if enemy!=0:
+    if enemy!=0 and action!="inf_ships":
         print("You have been attacked by", enemy, "enemy", enemy_type+".")
         if defense>=enemy and enemies!=0:
             print("You successfully destroyed them.")
@@ -119,7 +125,7 @@ for i in range(100):
                 print("You successfully destroyed them.")
                 new_day.play()
             else:
-                losts=days+enemy_arrogantness
+                losts=enemy_arrogantness+days
                 print("You failed. Enemies have taken some of your credits.")
                 print(losts, "credits lost")
                 creds-=losts
@@ -133,16 +139,19 @@ for i in range(100):
         print("You have earned 250 credits.")
         creds+=250
         print("Now you have", creds+125, "credits.")
-    days+=1
+    if action!="inf_ships":
+        days+=1
     if days==trader_event:
         print(" You spotted a merchant ship.")
         print("He offers you 10 credonium for only 50 creds.")
         print("Type \"y\" to accept this offer.")
     if days==a_gamer_event:
+        the_Gamer.play()
         print("A strange man just appeared in front of you.")
         print("- Call me the Gamer. I can give you some creds, or you can give them to me.")
         print("- Do you want to play a game?")
         print("Type \"y\" to accept this offer.")
+        time.sleep(2)
     if days==100:
         enemy=23-defense
         if creds>=0:
@@ -193,6 +202,7 @@ for i in range(100):
             creds+=credonium_price
     if action=="t" and torpedoes>0:
         torpedoes-=1
+        torpedo.play()
         if is_torpedoes_upgraded_once==False:
             enemy_is_partly_destroyed=3
         else:
@@ -204,49 +214,59 @@ for i in range(100):
 # RESEARCHES RESEARCHES RESEARCHES RESEARCHES RESEARCHES RESEARCHES RESEARCHES RESEARCHES RESEARCHES RESEARCHES
 
     if action=="R1" and creds>=10 and credonium>=2 and is_armor_advanced==False:
+        research.play()
         credonium-=2
         creds-=10
         defense+=1
         is_armor_advanced=True
         print("Successfully researched advanced armor, defense increased by 1.")
     if action=="R2" and creds>=15 and credonium>=3:
+        research.play()
         creds-=15
         credonium-=3
         is_AA_built=True
         print("Successfully researched AA, now you can defend against scouts.")
     if action=="R3" and creds>=30 and credonium>=5 and is_AA_built==True:
+        research.play()
         creds-=30
         credonium-=5
         defense+=2
         is_AA_upgraded=True
         print("Successfully upgraded AA, its strength increased, damage increased by 2.")
     if action=="R4" and creds>=20 and credonium>=10:
+        research.play()
         creds-=20
         credonium-=10
         is_credonium_buildings=True
         print("Congratulations, now we know how to produce credonium!")
     if action=="R5" and creds>=70 and credonium>=5 and is_credonium_buildings==True:
+        research.play()
         creds-=70
         credonium-=5
         is_income_in_credonium=True
         print("Congratulations, now we can produce credonium!")
     if action=="R6" and creds>=30 and credonium>=3:
+        research.play()
         creds-=30
         credonium-=3
         is_building_advanced=True
         print("Successfully upgraded docks, all ships' cost decreased by 5.")
     if action=="R7" and creds>=50 and credonium>=10 and is_building_advanced==True:
+        research.play()
         creds-=50
         credonium-=10
         is_building_titans=True
         print("Now you can build titans!")
     if action=="R8" and creds>=15:
+        research.play()
         creds-=15
         is_torpedoes_upgraded_once=True
+        print("Successfully upgraded torpedoes.")
 
 # SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS SHIPS
 
     if action=="inf_ships":
+        inf_ships.play()
         print(" Building ships:")
         print("Scout - type \"Bs\", costs 5 creds and 1 credonium.")
         print("Destroyer - type \"Bd\", costs 15 creds and 3 credonium.")
